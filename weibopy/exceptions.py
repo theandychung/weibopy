@@ -188,7 +188,20 @@ Weibo API
 class WeiboRequestError(Exception):
     """
     """
-    pass
+
+    def __init__(self, status_code, method, error_code, error, request):
+        self.status_code = status_code
+        self.method = method
+        self.error_code = error_code
+        self.error = error
+        self.request = request
+
+        super(WeiboRequestError, self).__init__(status_code, method, error_code, error, request)
+
+    def __str__(self):
+        return"Weibo API request error: status code: {0.status_code} -> method: {0.method} " \
+              "\n {0.error_code}: {0.error} \n request: {0.request}".format(self)
+
 
 
 class WeiboOauth2Error(Exception):

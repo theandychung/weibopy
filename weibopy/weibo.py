@@ -53,15 +53,31 @@ class WeiboClient(object):
             else:
                 return data
         else:
-            raise WeiboRequestError(
-                "Weibo API request error: status code: {code} url:{url} ->"
-                " method:{method}: data={data}".format(
-                    code=response.status_code,
-                    url=response.url,
-                    method=response.request.method,
-                    data=data
-                )
-            )
+            import ast
+            text=ast.literal_eval(response.text)
+            raise WeiboRequestError(response.status_code,
+                                    response.request.method,
+                                    text.get("error_code"),
+                                    text.get("error"),
+                                    text.get("request"))
+
+            # import json
+            # trying=json.loads(response.text)
+            # raise WeiboRequestError(
+            #     "Weibo API request error: status code: {code} url:{url} ->"
+            #     " method:{method}: data={data} \n"
+            #     "error: {weibo_error} \n"
+            #     "error code: {weibo_error_code} \n"
+            #     "request: {weibo_error_request} \n".format(
+            #         code=response.status_code,
+            #         url=response.url,
+            #         method=response.request.method,
+            #         data=data,
+            #         weibo_error=trying.get("error"),
+            #         weibo_error_code=trying.get("error_code"),
+            #         weibo_error_request=trying.get("request")
+            #     )
+            # )
 
     def get(self, suffix, params=None):
         """
